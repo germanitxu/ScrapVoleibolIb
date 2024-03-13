@@ -1,0 +1,13 @@
+# virtualenv folder
+/venv
+
+# Folder to download the data
+/data
+
+# Pycharm things
+.idea
+
+# Python cache
+__pycache__
+
+.env
