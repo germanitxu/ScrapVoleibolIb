@@ -11,3 +11,6 @@
 __pycache__
 
 .env
+
+# Temporal folder to dump json data
+/temp

@@ -2,21 +2,12 @@ import os
 import sys
 import dotenv
 import shutil
-from .scrapping import get_classification_table, get_all_results
+import re
 from crontab import CronTab
+import json
 
 dotenv_file = dotenv.find_dotenv()
 dotenv.load_dotenv(dotenv_file)
-
-
-def create_csv():
-    # Get Selected leagues by the user
-    leagues = os.getenv("LEAGUES_ID").split(",")
-
-    # Scrap and creat the files
-    for league_id in leagues:
-        get_all_results(league_id)
-        get_classification_table(league_id)
 
 
 def save_leagues_ids(ids):
@@ -30,6 +21,29 @@ def save_leagues_ids(ids):
         shutil.copy(".env.template", ".env")
 
     dotenv.set_key(dotenv_file, "LEAGUES_ID", ids)
+
+
+def create_json_leagues(leagues_dict):
+    """
+    Creates a json files with a relation of league names and IDs
+    :param leagues_dict: Ids of leagues
+    :return:
+    """
+    os.makedirs("temp", exist_ok=True)
+    path_file = "temp/leagues_names_id.json"
+    json_data = {i: league for league, i in leagues_dict.items()}
+    with open(path_file, "w", encoding="utf-8") as f:
+        json.dump(json_data, f)
+
+
+def read_json_leagues():
+    """
+    Reads the json leagues id: name file
+    :return:
+    """
+    f = open("temp/leagues_names_id.json")
+    data = json.load(f)
+    return data
 
 
 def get_saved_leagues() -> [str]:
@@ -56,6 +70,18 @@ def create_cron():
     :return:
     """
     cron = CronTab(user=True)
-    job = cron.new(command=f'{sys.executable} scripts/create_csv.py', comment="scrappingVIB")
+    job = cron.new(command=f'{sys.executable} main.py update', comment="scrappingVIB")
     job.minute.every(2)
     cron.write()
+
+
+def get_league_name_from_id(c_id) -> str:
+    """
+    Sanitizes and return the name of the league
+    :param c_id: League ID
+    :return: League Name
+    """
+    leagues_ids_names = read_json_leagues()
+    name = leagues_ids_names[c_id]
+    sanitized_name = re.sub("\\W+", ' ', name).strip().replace(" ", "_")
+    return sanitized_name

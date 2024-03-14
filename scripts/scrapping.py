@@ -5,6 +5,7 @@ from urllib.parse import urlparse, parse_qs
 import csv
 import os
 from .common import Result
+from .utils import get_league_name_from_id
 
 
 def format_sub_leagues_names(pre_name, name) -> str:
@@ -68,9 +69,10 @@ def get_classification_table(c_id, day=""):
     headers[0] = "#"  # First header is just an empty value, belonging to the team position
     rows = [[td.text for td in row.find_all("td")] for row in classification_table.select("tr + tr")]
     # Preparing the directory and file to dump the data
-    data_directory = os.path.join("../data", c_id)
+    league_name = get_league_name_from_id(c_id)
+    data_directory = os.path.join("../data", league_name)
     os.makedirs(data_directory, exist_ok=True)
-    path_file = f'data/{c_id}/classification_table.csv'
+    path_file = f'data/{league_name}/classification_table.csv'
     with open(path_file, "w") as o:
         w = csv.writer(o)
         # Headers
@@ -131,9 +133,8 @@ def get_days(c_id):
     page = requests.get(url)
     soup = Bs(page.text, "html.parser")
     # In this case, the select has 2 option selected, the first one being a disabled, so I had to it this way
-    selected = soup.css.select("select option[selected]")[1]["value"]  # TODO: find a way to get the selected option
     options = [option["value"] for option in soup.find("select").find_all("option") if option["value"]]
-    return selected, options
+    return options
 
 
 def get_all_results(c_id):
@@ -143,13 +144,13 @@ def get_all_results(c_id):
     :return:
     """
     # Prepare the directory and file
-    # TODO change path to include league name instead of id
-    data_directory = os.path.join("data", c_id)
+    league_name = get_league_name_from_id(c_id)
+    data_directory = os.path.join("data", league_name)
     os.makedirs(data_directory, exist_ok=True)
-    path_file = f'data/{c_id}/results_table.csv'
+    path_file = f'data/{league_name}/results_table.csv'
     # Headers
     headers = "JORNADA, DIA, HORA, EQUIPOS, SET 1, SET 2, SET 3, SET 4, SET 5, TOTAL".split(",")
-    current_day, days = get_days(c_id)
+    days = get_days(c_id)
     with open(path_file, "w", newline="", encoding="utf-8") as o:
         w = csv.writer(o)
         # Headers
