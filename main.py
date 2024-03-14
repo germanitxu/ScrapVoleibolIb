@@ -52,6 +52,7 @@ def select_leagues():
             # TODO Create schtask for windows. What I saw looked really sad
             rp("[red bold]:warning: Scheduling task for Windows is disabled for now. :warning: [red bold]")
     else:
+        # TODO Delete cron if it exists
         rp("[yellow bold] You can always manually download updated data using the command 'update'.[yellow bold]")
     ids = ",".join([league_key_value[answer] for answer in answers["leagues"]])
     save_leagues_ids(ids)
@@ -60,28 +61,11 @@ def select_leagues():
 
 @app.command("update", help="manually activate the scrap and download the files.")
 def update():
+    """
+    Creates the csv from the selected leagues
+    :return:
+    """
     create_csv()
-
-
-@app.command("test")
-def select_leagues():
-    questions = [
-        {
-            "type": "confirm",
-            "message": "Do you want to continue?",
-            "name": "continue",
-            "default": True,
-        },
-        {
-            "type": "confirm",
-            "message": "Do you want to exit?",
-            "name": "exit",
-            "default": False,
-        },
-    ]
-
-    answers = prompt(questions)
-    rp(answers)
 
 
 if __name__ == "__main__":

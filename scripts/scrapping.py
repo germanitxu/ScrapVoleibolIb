@@ -95,7 +95,7 @@ def get_results_per_day(c_id, day="") -> [Result]:
     results = []
     for info in info_matches:
         top = info.find(class_="top")  # This div has the Date, location and hour
-        date, hour = top.find(class_="fecha").text.split("-")
+        date, hour = top.find(class_="fecha").text.split("-")  # TODO check case hour doesn't exist in the website
         # location = top.find(class_="municipio").text # Location was missing half the times. I can't make any use of it anyway so I am going to skip it # noqa
         info_match = info.find(class_="datos_partido")  # This div has the names and results of each set
         result = info_match.find(class_="marcador").text.split("-")
@@ -141,6 +141,7 @@ def get_all_results(c_id):
     :return:
     """
     # Prepare the directory and file
+    # TODO change path to include league name instead of id
     data_directory = os.path.join("data", c_id)
     os.makedirs(data_directory, exist_ok=True)
     path_file = f'data/{c_id}/results_table.csv'
