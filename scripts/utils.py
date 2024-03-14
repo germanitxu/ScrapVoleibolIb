@@ -70,7 +70,7 @@ def create_cron():
     :return:
     """
     cron = CronTab(user=True)
-    job = cron.new(command=f'{sys.executable} main.py update', comment="scrappingVIB")
+    job = cron.new(command=f"{sys.executable} main.py update", comment="scrappingVIB")
     job.minute.every(2)
     cron.write()
 
@@ -83,5 +83,5 @@ def get_league_name_from_id(c_id) -> str:
     """
     leagues_ids_names = read_json_leagues()
     name = leagues_ids_names[c_id]
-    sanitized_name = re.sub("\\W+", ' ', name).strip().replace(" ", "_")
+    sanitized_name = re.sub("\\W+", " ", name).strip().replace(" ", "_")
     return sanitized_name

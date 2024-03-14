@@ -33,7 +33,9 @@ def select_leagues():
             "message": "Select on or multiples leagues to follow",
             "name": "leagues",
             "choices": leagues_choices,
-            "validate": lambda answer: "You must choose at least one league." if len(answer) == 0 else True
+            "validate": lambda answer: "You must choose at least one league."
+            if len(answer) == 0
+            else True,
         },
         # Cron work will be disabled until further testing
         # TODO test on unix machines
@@ -43,7 +45,6 @@ def select_leagues():
         #     "name": "create_cron",
         #     "default": False,
         # }
-
     ]
     answers = prompt(questions)
     # if answers["create_cron"]:

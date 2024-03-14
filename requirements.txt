@@ -14,3 +14,5 @@ wcwidth==0.2.13
 python-dotenv==1.0.1
 python-crontab==3.0.0
 InquirerPy==0.3.4
+pre-commit==3.5.0
+ruff==0.3.2

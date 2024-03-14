@@ -1,4 +1,3 @@
-
 class Result:
     def __init__(self, day, date, hour, team_a_row, team_b_row, location=""):
         self.day = day
@@ -9,4 +8,4 @@ class Result:
         self.team_b = team_b_row
 
     def __str__(self):
-        return f'Game played at {self.date}, {self.hour} in {self.location}'
+        return f"Game played at {self.date}, {self.hour} in {self.location}"
