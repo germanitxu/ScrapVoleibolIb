@@ -1,12 +1,10 @@
 import typer
-# from PyInquirer import prompt,  Separator
 from InquirerPy import prompt
 from InquirerPy.base import Choice
 from InquirerPy.separator import Separator
 from rich import print as rp
 from scripts.scrapping import get_leagues
-from scripts.utils import create_cron, save_leagues_ids, create_csv, get_saved_leagues, delete_cron
-import platform
+from scripts.utils import save_leagues_ids, create_csv, get_saved_leagues
 
 app = typer.Typer()
 
