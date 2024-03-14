@@ -3,6 +3,7 @@ import sys
 import dotenv
 import shutil
 from .scrapping import get_classification_table, get_all_results
+from crontab import CronTab
 
 dotenv_file = dotenv.find_dotenv()
 dotenv.load_dotenv(dotenv_file)
@@ -40,9 +41,21 @@ def get_saved_leagues() -> [str]:
     return leagues
 
 
-def create_cron():
-    from crontab import CronTab
+def delete_cron():
+    """
+    Deletes existing cron
+    :return:
+    """
     cron = CronTab(user=True)
-    job = cron.new(command=f'{sys.executable} scripts/create_csv.py')
+    cron.remove_all(comment="scrappingVIB")
+
+
+def create_cron():
+    """
+    Creates cron job
+    :return:
+    """
+    cron = CronTab(user=True)
+    job = cron.new(command=f'{sys.executable} scripts/create_csv.py', comment="scrappingVIB")
     job.minute.every(2)
     cron.write()

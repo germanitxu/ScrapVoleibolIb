@@ -95,7 +95,9 @@ def get_results_per_day(c_id, day="") -> [Result]:
     results = []
     for info in info_matches:
         top = info.find(class_="top")  # This div has the Date, location and hour
-        date, hour = top.find(class_="fecha").text.split("-")  # TODO check case hour doesn't exist in the website
+        fecha_items = top.find(class_="fecha").text.split("-")
+        date = fecha_items[0]
+        hour = fecha_items[-1] if len(fecha_items) else ""  # Sometimes we find only the date
         # location = top.find(class_="municipio").text # Location was missing half the times. I can't make any use of it anyway so I am going to skip it # noqa
         info_match = info.find(class_="datos_partido")  # This div has the names and results of each set
         result = info_match.find(class_="marcador").text.split("-")
