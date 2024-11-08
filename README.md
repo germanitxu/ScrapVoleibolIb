@@ -7,22 +7,26 @@ every single week.
 ## Instalation
 First, clone the project using the top right button or copy-pasting this into your terminal
 
-```commandline
+```sh
 git clone https://github.com/germanitxu/ScrapVoleibolIb.git
 ```
 I recommend using a [virtual environment](https://docs.python.org/3/library/venv.html) to install the dependencies. 
 
 The `requirements.txt` file should list all Python libraries that the app depend on, and they will be installed using:
 
-```commandline
+```sh
 pip install -r requirements.txt
+```
+Finally, copy the [env.template](.env.template) into a new .env file
+```sh
+cp .env.template .env
 ```
 
 ## How to use it
 
 ### League selection
 Using the command `leagues` will prompt the list of leagues currently ongoing and finished:
-```commandline
+```sh
 python main.py leagues
 ```
 Use the **arrows key** to navigate and **space** to select the ones you want to download the available results. Once you have
@@ -34,7 +38,7 @@ You can use this command again any time you want to update the leagues and cron 
 ### Manual update
 
 You can make this process manually by using the `update` command:
-```commandline
+```sh
 python main.py update
 ```
 
