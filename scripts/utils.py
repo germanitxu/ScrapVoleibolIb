@@ -51,7 +51,7 @@ def get_saved_leagues() -> [str]:
     Returns the ids saved if they exist
     :return: List of ids
     """
-    leagues = os.getenv("LEAGUES_ID").split(",")
+    leagues = os.getenv("LEAGUES_ID", "").split(",")
     return leagues
 
 
