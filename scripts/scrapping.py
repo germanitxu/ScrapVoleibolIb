@@ -177,7 +177,7 @@ def get_days(c_id):
 def get_all_results(c_id):
     """
     Get the results of each day and creates the rows to be used in the CSV
-    :param c_id: League Id
+    :param c_id: League ID
     :return:
     """
     # Prepare the directory and file
