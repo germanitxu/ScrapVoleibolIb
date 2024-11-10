@@ -1,8 +1,8 @@
 # Scrapping voleibolib.net
 
 Small app to scrap the [Illes Balears' volleyball federation website](https://www.voleibolib.net) and download the
-results of each day and league and download it into `.csv` file. I needed this to avoid copy and pasting from the web
-every single week.
+results of each day and league and download it into `.csv` file. Also adds events to your calendar for each selected
+league or team.
 
 ## Instalation
 
@@ -62,7 +62,9 @@ python main.py calendar_add_leagues
 
 ### Add calendar for specific teams
 
-For each league you have selected, a prompt will show you a list of teams to save their matches as individual events on the calendar.
+For each league you have selected, a prompt will show you a list of teams to save their matches as individual events on
+the calendar.
+
 ```sh
 python main.py calendar_add_teams
 ```
