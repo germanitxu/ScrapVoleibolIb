@@ -83,18 +83,8 @@ def get_classification_table(c_id, day=""):
         [td.text for td in row.find_all("td")]
         for row in classification_table.select("tr + tr")
     ]
-    # Preparing the directory and file to dump the data
-    league_name = get_league_name_from_id(c_id)
-    data_directory = os.path.join("../data", league_name)
-    os.makedirs(data_directory, exist_ok=True)
-    path_file = f"data/{league_name}/classification_table.csv"
-    with open(path_file, "w") as o:
-        w = csv.writer(o)
-        # Headers
-        w.writerow(headers)
-        # Rows
-        for r in rows:
-            w.writerow(r)
+
+    return headers, rows
 
 
 def get_results_per_day(c_id, day="") -> [Result]:
@@ -102,14 +92,14 @@ def get_results_per_day(c_id, day="") -> [Result]:
     Returns a list of Result for that day of competition
     :param c_id: ID of the league
     :param day: To fetch results of the league of that day
-    :return:
+    :return: list[Result]
     """
     url = f"https://www.voleibolib.net/JSON/get_resultados.asp?id={c_id}&jor={day}"
     page = requests.get(url)
     soup = Bs(page.text, "html.parser")
     result_day = soup.find("h3", recursive=False).text.split()[1]
     info_matches = soup.find_all(class_="info_partido")
-    results = []
+    results: list[Result] = []
     for info in info_matches:
         top = info.find(class_="top")  # This div has the Date, location and hour
         fecha_items = top.find(class_="fecha").text.split("-")
@@ -125,6 +115,9 @@ def get_results_per_day(c_id, day="") -> [Result]:
         team_a_name, team_b_name = [
             team.text for team in info_match.find_all(class_="nombreEquipo")
         ]
+        if team_b_name == "Descansa":
+            # There is no team b
+            continue
         # If the match was not played, both scorers are empty, and the rest of the data is going to be empty also
         sets_info = info.find(class_="estado_partido").find(class_="marcador").text
         total_sets = len(sets_info.split("/")) if len(sets_info.split("/")) > 1 else 0
@@ -153,13 +146,6 @@ def get_results_per_day(c_id, day="") -> [Result]:
     return results
 
 
-def testing():
-    url = "https://www.voleibolib.net/clasificaciones?id=4453&desp=1023"
-    page = requests.get(url)
-    soup = Bs(page.text, "html.parser")
-    print(soup.find(id="combo-cal"))
-
-
 def get_days(c_id):
     url = f"https://www.voleibolib.net/JSON/get_combo_jornadas.asp?id={c_id}&fun=1"
     # fun parameter is mandatory, but its value can be 1 and 2. It only changes thet attributes inside the select.
@@ -172,36 +158,3 @@ def get_days(c_id):
         if option["value"]
     ]
     return options
-
-
-def get_all_results(c_id):
-    """
-    Get the results of each day and creates the rows to be used in the CSV
-    :param c_id: League ID
-    :return:
-    """
-    # Prepare the directory and file
-    league_name = get_league_name_from_id(c_id)
-    data_directory = os.path.join("data", league_name)
-    os.makedirs(data_directory, exist_ok=True)
-    path_file = f"data/{league_name}/results_table.csv"
-    # Headers
-    headers = (
-        "JORNADA, DIA, HORA, EQUIPOS, SET 1, SET 2, SET 3, SET 4, SET 5, TOTAL".split(
-            ","
-        )
-    )
-    days = get_days(c_id)
-    with open(path_file, "w", newline="", encoding="utf-8") as o:
-        w = csv.writer(o)
-        # Headers
-        w.writerow(headers)
-        # Rows
-        for day in days:
-            w.writerow([day])
-            day_results = get_results_per_day(c_id, day)
-            day_results.sort(key=lambda x: (x.date, x.hour))
-            for day_result in day_results:
-                w.writerow(["", day_result.date, day_result.hour] + day_result.team_a)
-                w.writerow(3 * [""] + day_result.team_b)
-                w.writerow([])

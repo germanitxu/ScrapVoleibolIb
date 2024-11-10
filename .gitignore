@@ -15,5 +15,8 @@ __pycache__
 # Temporal folder to dump json data
 /temp
 
+# Google credentials
+/google_creds
+
 
 .ruff_cache
